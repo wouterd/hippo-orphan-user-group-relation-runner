@@ -41,6 +41,7 @@ public class OrphanUserGroupRelationDeleterRunner extends AbstractRunnerPlugin {
     private void processGroup(Session session, Node node) throws RepositoryException {
         if (!node.isNodeType(NODE_TYPE_HIPPOSYS_GROUP)) {
             getLogger().error("Cannot process a node that is not a hipposys:group node");
+            return;
         }
         getLogger().info("======== Processing group: {}", obtainGroupName(node));
 
@@ -51,14 +52,7 @@ public class OrphanUserGroupRelationDeleterRunner extends AbstractRunnerPlugin {
             return;
         }
 
-        List<String> validatedUsers = new ArrayList<String>();
-        for (String user : users) {
-            if (shouldIgnoreUser(user) || userExists(session, user)) {
-                validatedUsers.add(user);
-            } else {
-                getLogger().info("= Found user '{}' that doesn't exist anymore", user);
-            }
-        }
+        List<String> validatedUsers = obtainAllUsersThatExist(session, users);
 
         boolean usersChanged = validatedUsers.size() < users.size();
 
@@ -69,13 +63,33 @@ public class OrphanUserGroupRelationDeleterRunner extends AbstractRunnerPlugin {
 
         boolean shouldCommit = Boolean.parseBoolean(getConfigValue("commit"));
         if (shouldCommit) {
-            getLogger().info("= Writing new users to group");
-            node.setProperty(PROPERTY_HIPPOSYS_MEMBERS, validatedUsers.toArray(new String[validatedUsers.size()]));
-            session.save();
+            setMembersPropertyOnGroupNode(session, node, validatedUsers);
         } else {
-            getLogger().info("= Initial users in group: {}", users);
-            getLogger().info("= Validated users in group: {}", validatedUsers);
+            outputUserInformation(users, validatedUsers);
         }
+    }
+
+    private void outputUserInformation(List<String> users, List<String> validatedUsers) {
+        getLogger().info("= Initial users in group: {}", users);
+        getLogger().info("= Validated users in group: {}", validatedUsers);
+    }
+
+    private void setMembersPropertyOnGroupNode(Session session, Node node, List<String> validatedUsers) throws RepositoryException {
+        getLogger().info("= Writing new users to group");
+        node.setProperty(PROPERTY_HIPPOSYS_MEMBERS, validatedUsers.toArray(new String[validatedUsers.size()]));
+        session.save();
+    }
+
+    private List<String> obtainAllUsersThatExist(Session session, List<String> users) throws RepositoryException {
+        List<String> validatedUsers = new ArrayList<String>();
+        for (String user : users) {
+            if (shouldIgnoreUser(user) || userExists(session, user)) {
+                validatedUsers.add(user);
+            } else {
+                getLogger().info("= Found user '{}' that doesn't exist anymore", user);
+            }
+        }
+        return validatedUsers;
     }
 
     private List<String> getAllUsersInGroup(Node node) throws RepositoryException {
