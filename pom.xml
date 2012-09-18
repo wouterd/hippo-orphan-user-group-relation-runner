@@ -10,6 +10,25 @@
     <name>orphan-user-group-relation-deleter</name>
     <url>https://github.com/wouterd/hippo-orphan-user-group-relation-runner</url>
 
+    <organization>
+        <name>Hinttech</name>
+        <url>http://www.hinttech.com</url>
+    </organization>
+
+    <developers>
+        <developer>
+            <name>Wouter Danes</name>
+            <organization>Hinttech</organization>
+            <email>wouter.danes@gmail.com</email>
+            <id>wouterd</id>
+            <organizationUrl>http://www.hinttech.com</organizationUrl>
+            <roles>
+                <role>Developer</role>
+            </roles>
+            <timezone>+1</timezone>
+        </developer>
+    </developers>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
