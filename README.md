@@ -3,7 +3,7 @@ hippo-orphan-user-group-relation-runner
 
 Hippo CMS 7 runner that removes user-references in groups to users that don't exist anymore.
 
-HOWTO: User this runner
+HOWTO: Use this runner
 - Either build the runner from source or download a binary distribution
 - Go to the folder where you extracted or built the runner files
 - Edit the file "runner.properties":
