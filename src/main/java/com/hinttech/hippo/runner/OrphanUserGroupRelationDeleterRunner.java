@@ -25,6 +25,7 @@ public class OrphanUserGroupRelationDeleterRunner extends AbstractRunnerPlugin {
     private static final String NODE_TYPE_HIPPOSYS_GROUP = "hipposys:group";
 
     private static final List<String> USER_NAMES_TO_IGNORE = Arrays.asList("*");
+    public static final String PROPERTY_HIPPOSYS_DESCRIPTION = "hipposys:description";
 
     @Override
     public void visit(Node node) {
@@ -107,8 +108,8 @@ public class OrphanUserGroupRelationDeleterRunner extends AbstractRunnerPlugin {
 
     private String obtainGroupName(Node node) throws RepositoryException {
         String description = null;
-        if (node.hasProperty("hipposys:description")) {
-            description = node.getProperty("hipposys:description").getString();
+        if (node.hasProperty(PROPERTY_HIPPOSYS_DESCRIPTION)) {
+            description = node.getProperty(PROPERTY_HIPPOSYS_DESCRIPTION).getString();
         }
         String nodeName = node.getName();
         return StringUtils.isBlank(description) ? nodeName : description + "(" + nodeName + ")";
